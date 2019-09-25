@@ -51,6 +51,19 @@ jobs:
           paths:
             - terraform.tfstate
 
+  action_deployment:
+    docker:
+      - image: hashicorp/terraform:light
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - attach_workspace:
+          at: workspace
+      - run: cp -r workspace/terraform.tfstate terraform.tfstate
+      - run: terraform init
+      - run: terraform apply -auto-approve
+      - run: mkdir -p workspace && cp terraform.tfstate workspace/terraform.tfstate
+
 workflows:
   version: 2
   ci:
@@ -66,6 +79,19 @@ workflows:
           requires:
             - test
             - build
+          filters:
+            branches:
+              only: master
+      - approve_deployment:
+          type: approval
+          requires:
+            - plan_deployment
+          filters:
+            branches:
+              only: master
+      - action_deployment:
+          requires:
+            - approve_deployment
           filters:
             branches:
               only: master
