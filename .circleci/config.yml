@@ -32,11 +32,11 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "yarn.lock" }}
+      - run: yarn build
       - save_cache:
           paths:
             - build
           key: v1-build-{{ checksum "yarn.lock" }}
-      - run: yarn build
 
   plan_deployment:
     docker:
