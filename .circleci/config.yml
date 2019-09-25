@@ -47,6 +47,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-build-{{ checksum "yarn.lock" }}
+      - run: terraform init
       - run: terraform plan
 
 workflows:
