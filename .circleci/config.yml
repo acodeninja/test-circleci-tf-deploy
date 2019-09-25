@@ -44,12 +44,12 @@ jobs:
           at: workspace
       - run: cp -r workspace/build build
       - run: terraform init
-      - run: terraform plan -out terraform.tfstate
-      - run: mkdir -p workspace && cp terraform.tfstate workspace/terraform.tfstate
+      - run: terraform plan -out terraform.plan
+      - run: mkdir -p workspace && cp terraform.plan workspace/terraform.plan
       - persist_to_workspace:
           root: workspace
           paths:
-            - terraform.tfstate
+            - terraform.plan
 
   action_deployment:
     docker:
@@ -59,9 +59,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: workspace
-      - run: cp -r workspace/terraform.tfstate terraform.tfstate
+      - run: cp -r workspace/terraform.plan terraform.plan
       - run: terraform init
-      - run: terraform apply -auto-approve terraform.tfstate
+      - run: terraform apply -auto-approve terraform.plan
 
 workflows:
   version: 2
