@@ -38,3 +38,12 @@ jobs:
           key: v1-build-{{ checksum "yarn.lock" }}
       - run: yarn build
 
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - test
+      - build:
+          filters:
+            branches:
+              only: master
