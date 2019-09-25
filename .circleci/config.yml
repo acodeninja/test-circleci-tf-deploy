@@ -27,16 +27,12 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "yarn.lock" }}
             - v1-dependencies-
-      - run: yarn install
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
       - run: yarn build
-      - save_cache:
+      - run: mkdir workspace && cp ./build ./workspace/
+      - persist_to_workspace:
+          root: workspace
           paths:
             - build
-          key: v1-build-{{ checksum "yarn.lock" }}
 
   plan_deployment:
     docker:
@@ -44,15 +40,12 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-build-{{ checksum "yarn.lock" }}
+      - attach_workspace:
+          at: workspace
+      - run: cp workspace/build build
       - run: terraform init
       - run: terraform plan -out terraform.tfstate
-      - save_cache:
-          paths:
-            - terraform.tfstate
-          key: v1-build-{{ checksum "terraform.tfstate" }}
+      - run: mkdir workspace && cp terraform.tfstate workspace/terraform.tfstate
 
 workflows:
   version: 2
