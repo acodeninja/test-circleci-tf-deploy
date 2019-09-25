@@ -38,6 +38,17 @@ jobs:
           key: v1-build-{{ checksum "yarn.lock" }}
       - run: yarn build
 
+  plan_deployment:
+    docker:
+      - image: hashicorp/terraform:light
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-build-{{ checksum "yarn.lock" }}
+      - run: terraform plan
+
 workflows:
   version: 2
   ci:
@@ -46,6 +57,13 @@ workflows:
       - build:
           requires:
             - test
+          filters:
+            branches:
+              only: master
+      - plan_deployment:
+          requires:
+            - test
+            - build
           filters:
             branches:
               only: master
