@@ -59,7 +59,8 @@ jobs:
       - checkout
       - attach_workspace:
           at: workspace
-      - run: cp -r workspace/terraform.plan terraform.plan
+      - run: cp workspace/terraform.plan terraform.plan
+      - run: cp -r workspace/build build
       - run: terraform init
       - run: terraform apply -auto-approve terraform.plan
 
