@@ -28,7 +28,7 @@ jobs:
             - v1-dependencies-{{ checksum "yarn.lock" }}
             - v1-dependencies-
       - run: yarn build
-      - run: mkdir workspace && cp -r ./build ./workspace/
+      - run: mkdir -p workspace && cp -r ./build ./workspace/
       - persist_to_workspace:
           root: workspace
           paths:
@@ -45,7 +45,7 @@ jobs:
       - run: cp -r workspace/build build
       - run: terraform init
       - run: terraform plan -out terraform.tfstate
-      - run: mkdir workspace && cp terraform.tfstate workspace/terraform.tfstate
+      - run: mkdir -p workspace && cp terraform.tfstate workspace/terraform.tfstate
 
 workflows:
   version: 2
