@@ -61,8 +61,7 @@ jobs:
           at: workspace
       - run: cp -r workspace/terraform.tfstate terraform.tfstate
       - run: terraform init
-      - run: terraform apply -auto-approve
-      - run: mkdir -p workspace && cp terraform.tfstate workspace/terraform.tfstate
+      - run: terraform apply -auto-approve terraform.tfstate
 
 workflows:
   version: 2
